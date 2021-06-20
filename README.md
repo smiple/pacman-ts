@@ -13,6 +13,7 @@ This project makes use of *__[NodeJS](https://nodejs.org/en/)__*. Download it, t
 1. visit [localhost:9000](http://localhost:9000) and enjoy the game 😉
 
 ## Goals for the repo 
+- [ ] Refactor TS File Namesg
 - [ ] Abstract out some game logic from gameCoordinator and add other class that help manage logic (like AssetLoader,GamePoints etc...)
 - [ ] Clean up document Element References
 - [ ] Create player control mechanism abstracted so that we can use change it in the future (like for AI version or Multiplayer version)
