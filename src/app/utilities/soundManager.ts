@@ -1,12 +1,28 @@
-class SoundManager {
+export default class SoundManager {
+  baseUrl;
+  fileFormat;
+  masterVolume;
+  paused;
+  cutscene;
+  ambience;
+  soundEffect;
+  dotPlayer;
+  queuedDotSound;
+  dotSound;
+  fetchingAmbience;
+  currentAmbience;
+  ambienceSource;
+
   constructor() {
-    this.baseUrl = 'app/style/audio/';
+    this.baseUrl = 'assets/audio/';
     this.fileFormat = 'mp3';
     this.masterVolume = 1;
     this.paused = false;
     this.cutscene = true;
 
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+
+    const AudioContext = window.AudioContext || (<any> window).webkitAudioContext;
     this.ambience = new AudioContext();
   }
 
@@ -84,8 +100,9 @@ class SoundManager {
   /**
    * Loops an ambient sound
    * @param {String} sound
+   * @param keepCurrentAmbience
    */
-  async setAmbience(sound, keepCurrentAmbience) {
+  async setAmbience(sound, keepCurrentAmbience?) {
     if (!this.fetchingAmbience && !this.cutscene) {
       if (!keepCurrentAmbience) {
         this.currentAmbience = sound;
@@ -142,6 +159,3 @@ class SoundManager {
   }
 }
 
-// removeIf(production)
-module.exports = SoundManager;
-// endRemoveIf(production)

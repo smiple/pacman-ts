@@ -1,4 +1,72 @@
-class GameCoordinator {
+import Ghost from '../characters/ghost';
+import Pacman from '../characters/pacman';
+import GameEngine from './gameEngine';
+import Pickup from "../pickups/pickup";
+import CharacterUtil from '../utilities/characterUtil';
+import SoundManager from "../utilities/soundManager";
+import Timer from "../utilities/timer";
+import {config} from "../config";
+
+export default class GameCoordinator {
+  gameUi;
+  rowTop;
+  mazeDiv;
+  mazeImg;
+  mazeCover;
+  pointsDisplay;
+  highScoreDisplay;
+  extraLivesDisplay;
+  fruitDisplay;
+  mainMenu;
+  gameStartButton;
+  pauseButton;
+  soundButton;
+  leftCover;
+  rightCover;
+  pausedText;
+  bottomRow;
+  movementButtons;
+  mazeArray;
+  maxFps;
+  tileSize;
+  scale;
+  scaledTileSize;
+  firstGame;
+  movementKeys;
+  fruitPoints;
+  soundManager;
+  remainingSources;
+  activeTimers;
+  points;
+  level;
+  lives;
+  extraLifeGiven;
+  remainingDots;
+  allowKeyPresses;
+  allowPacmanMovement;
+  allowPause;
+  cutscene;
+  highScore;
+  pacman;
+  blinky;
+  pinky;
+  inky;
+  clyde;
+  fruit;
+  entityList;
+  eyeGhosts;
+  scaredGhosts;
+  ghosts;
+  pickups;
+  gameEngine;
+  dotContainer;
+  ghostCycleTimer;
+  idleGhosts;
+  endIdleTimer;
+  ghostFlashTimer;
+  fruitTimer;
+  ghostCombo;
+
   constructor() {
     this.gameUi = document.getElementById('game-ui');
     this.rowTop = document.getElementById('row-top');
@@ -98,14 +166,10 @@ class GameCoordinator {
       this.soundButtonClick.bind(this),
     );
 
-    const head = document.getElementsByTagName('head')[0];
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'build/app.css';
 
-    link.onload = this.preloadAssets.bind(this);
+    this.preloadAssets();
 
-    head.appendChild(link);
+    // head.appendChild(link);
   }
 
   /**
@@ -164,7 +228,7 @@ class GameCoordinator {
    * Toggles the master volume for the soundManager, and saves the preference to storage
    */
   soundButtonClick() {
-    const newVolume = this.soundManager.masterVolume === 1 ? 0 : 1;
+    const newVolume:any = this.soundManager.masterVolume === 1 ? 0 : 1;
     this.soundManager.setMasterVolume(newVolume);
     localStorage.setItem('volumePreference', newVolume);
     this.setSoundButtonIcon(newVolume);
@@ -181,8 +245,8 @@ class GameCoordinator {
    * Displays an error message in the event assets are unable to download
    */
   displayErrorMessage() {
-    const loadingContainer = document.getElementById('loading-container');
-    const errorMessage = document.getElementById('error-message');
+    const loadingContainer:any = document.getElementById('loading-container');
+    const errorMessage:any = document.getElementById('error-message');
     loadingContainer.style.opacity = 0;
     setTimeout(() => {
       loadingContainer.remove();
@@ -197,11 +261,11 @@ class GameCoordinator {
    */
   preloadAssets() {
     return new Promise((resolve) => {
-      const loadingContainer = document.getElementById('loading-container');
-      const loadingPacman = document.getElementById('loading-pacman');
-      const loadingDotMask = document.getElementById('loading-dot-mask');
+      const loadingContainer:any = document.getElementById('loading-container');
+      const loadingPacman:any = document.getElementById('loading-pacman');
+      const loadingDotMask:any = document.getElementById('loading-dot-mask');
 
-      const imgBase = 'app/style/graphics/spriteSheets/';
+      const imgBase = config.imgBase;
       const imgSources = [
         // Pacman
         `${imgBase}characters/pacman/arrow_down.svg`,
@@ -290,10 +354,10 @@ class GameCoordinator {
         `${imgBase}maze/maze_blue.svg`,
 
         // Misc
-        'app/style/graphics/extra_life.png',
+        'assets/graphics/extra_life.png',
       ];
 
-      const audioBase = 'app/style/audio/';
+      const audioBase = 'assets/audio/';
       const audioSources = [
         `${audioBase}game_start.mp3`,
         `${audioBase}pause.mp3`,
@@ -323,7 +387,7 @@ class GameCoordinator {
       ])
         .then(() => {
           loadingContainer.style.opacity = 0;
-          resolve();
+          resolve(null);
 
           setTimeout(() => {
             loadingContainer.remove();
@@ -357,7 +421,7 @@ class GameCoordinator {
       let loadedSources = 0;
 
       sources.forEach((source) => {
-        const element = type === 'img' ? new Image() : new Audio();
+        const element:any = type === 'img' ? new Image() : new Audio();
         preloadDiv.appendChild(element);
 
         const elementReady = () => {
@@ -368,7 +432,7 @@ class GameCoordinator {
           loadingDotMask.style.width = loadingPacman.style.left;
 
           if (loadedSources === sources.length) {
-            resolve();
+            resolve(null);
           }
         };
 
@@ -496,7 +560,7 @@ class GameCoordinator {
     this.clearDisplay(this.fruitDisplay);
 
     const volumePreference = parseInt(
-      localStorage.getItem('volumePreference') || 1,
+      localStorage.getItem('volumePreference') || '1',
       10,
     );
     this.setSoundButtonIcon(volumePreference);
@@ -580,7 +644,7 @@ class GameCoordinator {
    * Displays "Ready!" and allows Pacman to move after a breif delay
    * @param {Boolean} initialStart - Special condition for the game's beginning
    */
-  startGameplay(initialStart) {
+  startGameplay(initialStart?) {
     if (initialStart) {
       this.soundManager.play('game_start');
     }
@@ -637,7 +701,7 @@ class GameCoordinator {
 
     for (let i = 0; i < this.lives; i += 1) {
       const extraLifePic = document.createElement('img');
-      extraLifePic.setAttribute('src', 'app/style/graphics/extra_life.svg');
+      extraLifePic.setAttribute('src', 'assets/graphics/extra_life.svg');
       extraLifePic.style.height = `${this.scaledTileSize * 2}px`;
       this.extraLivesDisplay.appendChild(extraLifePic);
     }
@@ -989,7 +1053,7 @@ class GameCoordinator {
     this.removeTimer({ detail: { timer: this.endIdleTimer } });
     this.removeTimer({ detail: { timer: this.ghostFlashTimer } });
 
-    const imgBase = 'app/style//graphics/spriteSheets/maze/';
+    const imgBase = 'assets/graphics/spriteSheets/maze/';
 
     new Timer(() => {
       this.ghosts.forEach((ghost) => {
@@ -1186,12 +1250,12 @@ class GameCoordinator {
    * @param {Number} width - Image width in pixels
    * @param {Number} height - Image height in pixels
    */
-  displayText(position, amount, duration, width, height) {
-    const pointsDiv = document.createElement('div');
+  displayText(position, amount, duration, width, height?) {
+    const pointsDiv:any = document.createElement('div');
 
     pointsDiv.style.position = 'absolute';
     pointsDiv.style.backgroundSize = `${width}px`;
-    pointsDiv.style.backgroundImage = 'url(app/style/graphics/'
+    pointsDiv.style.backgroundImage = 'url(assets/graphics/'
         + `spriteSheets/text/${amount}.svg`;
     pointsDiv.style.width = `${width}px`;
     pointsDiv.style.height = `${height || width}px`;
@@ -1257,6 +1321,3 @@ class GameCoordinator {
   }
 }
 
-// removeIf(production)
-module.exports = GameCoordinator;
-// endRemoveIf(production)

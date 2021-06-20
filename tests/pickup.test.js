@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const Pickup = require('../scripts/pickups/pickup');
+const Pickup = require('../src/app/pickups/pickup');
 
 let pickup;
 let pacman;
@@ -54,7 +54,7 @@ describe('pickup', () => {
       assert.strictEqual(pickup.x, 11);
       assert.strictEqual(pickup.y, 11);
       assert.deepEqual(pickup.animationTarget.style, {
-        backgroundImage: 'url(app/style/graphics/spriteSheets/pickups/'
+        backgroundImage: 'url(assets/graphics/spriteSheets/pickups/'
           + 'pacdot.svg)',
         backgroundSize: '2px',
         height: '2px',
@@ -73,7 +73,7 @@ describe('pickup', () => {
       assert.strictEqual(pickup.x, 8);
       assert.strictEqual(pickup.y, 8);
       assert.deepEqual(pickup.animationTarget.style, {
-        backgroundImage: 'url(app/style/graphics/spriteSheets/pickups/'
+        backgroundImage: 'url(assets/graphics/spriteSheets/pickups/'
          + 'powerPellet.svg)',
         backgroundSize: '8px',
         height: '8px',
@@ -93,7 +93,7 @@ describe('pickup', () => {
       assert.strictEqual(pickup.x, 4);
       assert.strictEqual(pickup.y, 4);
       assert.deepEqual(pickup.animationTarget.style, {
-        backgroundImage: 'url(app/style/graphics/spriteSheets/pickups/'
+        backgroundImage: 'url(assets/graphics/spriteSheets/pickups/'
          + 'cherry.svg)',
         backgroundSize: '16px',
         height: '16px',
@@ -110,7 +110,7 @@ describe('pickup', () => {
     let baseUrl;
 
     beforeEach(() => {
-      baseUrl = 'url(app/style/graphics/spriteSheets/pickups/';
+      baseUrl = 'url(assets/graphics/spriteSheets/pickups/';
     });
 
     it('returns correct images for fruits', () => {

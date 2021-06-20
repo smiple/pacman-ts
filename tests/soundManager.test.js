@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const SoundManager = require('../scripts/utilities/soundManager');
+const SoundManager = require('../src/app/utilities/soundManager');
 
 let comp;
 
@@ -58,7 +58,7 @@ describe('soundManager', () => {
       const spy = sinon.spy(global, 'Audio');
 
       comp.play('some_sound');
-      assert(spy.calledWith('app/style/audio/some_sound.mp3'));
+      assert(spy.calledWith('assets/audio/some_sound.mp3'));
     });
   });
 
@@ -67,11 +67,11 @@ describe('soundManager', () => {
       const spy = sinon.spy(global, 'Audio');
 
       comp.playDotSound();
-      assert(spy.calledWith('app/style/audio/dot_1.mp3'));
+      assert(spy.calledWith('assets/audio/dot_1.mp3'));
 
       comp.dotPlayer = undefined;
       comp.playDotSound();
-      assert(spy.calledWith('app/style/audio/dot_2.mp3'));
+      assert(spy.calledWith('assets/audio/dot_2.mp3'));
     });
 
     it('does nothing if another dot sound is already playing', () => {
@@ -133,7 +133,7 @@ describe('soundManager', () => {
 
     it('loops an ambient sound', async () => {
       await comp.setAmbience('some_sound');
-      assert(global.fetch.calledWith('app/style/audio/some_sound.mp3'));
+      assert(global.fetch.calledWith('assets/audio/some_sound.mp3'));
       assert(arraySpy.called);
       assert(comp.ambience.decodeAudioData.called);
       assert(comp.ambience.createBufferSource.called);

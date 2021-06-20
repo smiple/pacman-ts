@@ -1,4 +1,11 @@
-class Timer {
+export default class Timer {
+  callback;
+  remaining;
+  pausedBySystem;
+  oldTimerId;
+  timerId;
+  start;
+
   constructor(callback, delay) {
     this.callback = callback;
     this.remaining = delay;
@@ -12,7 +19,7 @@ class Timer {
    */
   pause(systemPause) {
     window.clearTimeout(this.timerId);
-    this.remaining -= new Date() - this.start;
+    this.remaining -= new Date().getTime() - this.start;
     this.oldTimerId = this.timerId;
 
     if (systemPause) {
@@ -25,7 +32,7 @@ class Timer {
    * illusion of 'resuming' the old setTimeout
    * @param {Boolean} systemResume
    */
-  resume(systemResume) {
+  resume(systemResume?) {
     if (systemResume || !this.pausedBySystem) {
       this.pausedBySystem = false;
 
@@ -49,7 +56,3 @@ class Timer {
     }
   }
 }
-
-// removeIf(production)
-module.exports = Timer;
-// endRemoveIf(production)

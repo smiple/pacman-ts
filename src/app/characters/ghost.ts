@@ -1,6 +1,45 @@
-class Ghost {
+export default class Ghost {
+  scaledTileSize;
+  mazeArray;
+  pacman;
+  name;
+  level;
+  characterUtil;
+  blinky;
+  animationTarget;
+  defaultSpeed;
+  cruiseElroy;
+  allowCollision;
+  defaultMode;
+  mode;
+  idleMode;
+  fastSpeed;
+  mediumSpeed;
+  slowSpeed;
+  scaredSpeed;
+  transitionSpeed;
+  spriteFrames;
+  direction;
+  eyeSpeed;
+  velocityPerMs;
+  moving;
+  defaultDirection;
+  display;
+  loopAnimation;
+  animate;
+  msBetweenSprites;
+  msSinceLastSprite;
+  backgroundOffsetPixels;
+  measurement;
+  defaultPosition;
+  oldPosition
+  position;
+  scaredColor;
+  paused;
+
+
   constructor(
-    scaledTileSize, mazeArray, pacman, name, level, characterUtil, blinky,
+    scaledTileSize, mazeArray, pacman, name, level, characterUtil, blinky?,
   ) {
     this.scaledTileSize = scaledTileSize;
     this.mazeArray = mazeArray;
@@ -18,7 +57,7 @@ class Ghost {
    * Rests the character to its default state
    * @param {Boolean} fullGameReset
    */
-  reset(fullGameReset) {
+  reset(fullGameReset?) {
     if (fullGameReset) {
       delete this.defaultSpeed;
       delete this.cruiseElroy;
@@ -175,13 +214,13 @@ class Ghost {
     }
 
     if (mode === 'scared') {
-      this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
+      this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
         + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.svg)`;
     } else if (mode === 'eyes') {
-      this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
+      this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
         + `spriteSheets/characters/ghosts/eyes_${direction}.svg)`;
     } else {
-      this.animationTarget.style.backgroundImage = 'url(app/style/graphics/'
+      this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
         + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
         + `${emotion}.svg)`;
     }
@@ -219,7 +258,7 @@ class Ghost {
    * @returns {(false | { x: number, y: number})} - x-y pair if the tile is free, false otherwise
    */
   getTile(mazeArray, y, x) {
-    let tile = false;
+    let tile = null;
 
     if (mazeArray[y] && mazeArray[y][x] && mazeArray[y][x] !== 'X') {
       tile = {
@@ -252,7 +291,7 @@ class Ghost {
     possibleMoves[this.characterUtil.getOppositeDirection(direction)] = false;
 
     Object.keys(possibleMoves).forEach((tile) => {
-      if (possibleMoves[tile] === false) {
+      if (!possibleMoves[tile]) {
         delete possibleMoves[tile];
       }
     });
@@ -267,6 +306,9 @@ class Ghost {
    * @returns {number}
    */
   calculateDistance(position, pacman) {
+    if(position == null || pacman == null){
+      debugger;
+    }
     return Math.sqrt(
       ((position.x - pacman.x) ** 2) + ((position.y - pacman.y) ** 2),
     );
@@ -841,6 +883,3 @@ class Ghost {
   }
 }
 
-// removeIf(production)
-module.exports = Ghost;
-// endRemoveIf(production)

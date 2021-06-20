@@ -1,4 +1,16 @@
-class GameEngine {
+export default class GameEngine {
+  fpsDisplay;
+  elapsedMs;
+  lastFrameTimeMs;
+  entityList;
+  maxFps;
+  timestep;
+  fps;
+  framesThisSecond;
+  lastFpsUpdate;
+  frameId;
+  running;
+  started;
   constructor(maxFps, entityList) {
     this.fpsDisplay = document.getElementById('fps-display');
     this.elapsedMs = 0;
@@ -155,6 +167,3 @@ class GameEngine {
   }
 }
 
-// removeIf(production)
-module.exports = GameEngine;
-// endRemoveIf(production)

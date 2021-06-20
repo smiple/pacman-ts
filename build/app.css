@@ -174,7 +174,7 @@ body {
 .loading-pacman {
   animation: loading-animation 0.3s steps(4) infinite;
   background-color: #000;
-  background-image: url("../app/style/graphics/spriteSheets/characters/pacman/pacman_right.svg");
+  background-image: url("src/assets/graphics/spriteSheets/characters/pacman/pacman_right.svg");
   background-size: 192px;
   border-radius: 10px;
   height: 48px;
@@ -198,7 +198,7 @@ body {
   z-index: -1; }
 
 .loading-dot {
-  background-image: url("../app/style/graphics/spriteSheets/pickups/pacdot.svg");
+  background-image: url("src/assets/graphics/spriteSheets/pickups/pacdot.svg");
   height: 6px;
   position: absolute;
   top: 50%;
@@ -323,7 +323,7 @@ body {
   z-index: 4; }
   .error-message .error-pacman {
     animation: error-animation 1.5s steps(12) infinite;
-    background-image: url("../app/style/graphics/spriteSheets/characters/pacman/pacman_error.svg");
+    background-image: url("src/assets/graphics/spriteSheets/characters/pacman/pacman_error.svg");
     background-size: 576px;
     height: 48px;
     margin-left: 10px;

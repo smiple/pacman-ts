@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const Timer = require('../scripts/utilities/timer');
+const Timer = require('../src/app/utilities/timer');
 
 let comp;
 let clock;

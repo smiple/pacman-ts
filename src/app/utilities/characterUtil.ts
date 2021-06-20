@@ -1,4 +1,5 @@
-class CharacterUtil {
+export default class CharacterUtil {
+  directions;
   constructor() {
     this.directions = {
       up: 'up',
@@ -150,7 +151,7 @@ class CharacterUtil {
    */
   checkForWallCollision(desiredNewGridPosition, mazeArray, direction) {
     const roundingFunction = this.determineRoundingFunction(
-      direction, this.directions,
+      direction,// TODO Check This param this.directions,
     );
 
     const desiredX = roundingFunction(desiredNewGridPosition.x);
@@ -199,7 +200,7 @@ class CharacterUtil {
   snapToGrid(position, direction, scaledTileSize) {
     const newPosition = Object.assign({}, position);
     const roundingFunction = this.determineRoundingFunction(
-      direction, this.directions,
+      direction, // TODO Check This parameter this.directions,
     );
 
     switch (direction) {
@@ -275,6 +276,3 @@ class CharacterUtil {
   }
 }
 
-// removeIf(production)
-module.exports = CharacterUtil;
-// endRemoveIf(production)

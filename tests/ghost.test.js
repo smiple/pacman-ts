@@ -1,7 +1,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const Ghost = require('../scripts/characters/ghost');
-const CharacterUtil = require('../scripts/utilities/characterUtil');
+const Ghost = require('../src/app/characters/ghost');
+const CharacterUtil = require('../src/app/utilities/characterUtil');
 
 const scaledTileSize = 8;
 const mazeArray = [
@@ -140,7 +140,7 @@ describe('ghost', () => {
       comp.setSpriteSheet(undefined, undefined, 'scared');
       assert.strictEqual(
         comp.animationTarget.style.backgroundImage,
-        'url(app/style/graphics/spriteSheets/characters/ghosts/'
+        'url(assets/graphics/spriteSheets/characters/ghosts/'
         + 'scared_blue.svg)',
       );
 
@@ -148,13 +148,13 @@ describe('ghost', () => {
       comp.setSpriteSheet(undefined, undefined, 'scared');
       assert.strictEqual(
         comp.animationTarget.style.backgroundImage,
-        'url(app/style/graphics/spriteSheets/characters/ghosts/'
+        'url(assets/graphics/spriteSheets/characters/ghosts/'
         + 'scared_white.svg)',
       );
     });
 
     it('sets the correct spritesheets for eyes mode', () => {
-      const url = 'url(app/style/graphics/spriteSheets/characters/ghosts/';
+      const url = 'url(assets/graphics/spriteSheets/characters/ghosts/';
 
       comp.setSpriteSheet('blinky', 'up', 'eyes');
       assert.strictEqual(
@@ -178,7 +178,7 @@ describe('ghost', () => {
     });
 
     it('sets the correct spritesheet for any given direction', () => {
-      const url = 'url(app/style/graphics/spriteSheets/characters/ghosts/';
+      const url = 'url(assets/graphics/spriteSheets/characters/ghosts/';
 
       comp.setSpriteSheet('blinky', 'up');
       assert.strictEqual(
@@ -203,7 +203,7 @@ describe('ghost', () => {
     });
 
     it('adds emotion if the ghost is moving quickly', () => {
-      const url = 'url(app/style/graphics/spriteSheets/characters/ghosts/';
+      const url = 'url(assets/graphics/spriteSheets/characters/ghosts/';
 
       comp.defaultSpeed = comp.mediumSpeed;
       comp.setSpriteSheet('blinky', 'up', 'chase');
@@ -234,7 +234,7 @@ describe('ghost', () => {
       assert.deepEqual(comp.position, comp.defaultPosition);
       assert.strictEqual(comp.direction, comp.defaultDirection);
       assert.strictEqual(comp.animationTarget.style.backgroundImage,
-        'url(app/style/graphics/spriteSheets/characters/ghosts/blinky'
+        'url(assets/graphics/spriteSheets/characters/ghosts/blinky'
         + '/blinky_left.svg)');
       assert.strictEqual(comp.backgroundOffsetPixels, 0);
       assert.strictEqual(comp.animationTarget.style.backgroundPosition,

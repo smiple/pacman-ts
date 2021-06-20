@@ -1,7 +1,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const Pacman = require('../scripts/characters/pacman');
-const CharacterUtil = require('../scripts/utilities/characterUtil');
+const Pacman = require('../src/app/characters/pacman');
+const CharacterUtil = require('../src/app/utilities/characterUtil');
 
 const scaledTileSize = 8;
 
@@ -39,7 +39,7 @@ describe('pacman', () => {
       assert(pacman.setDefaultPosition.calledWith(pacman.scaledTileSize));
       assert(pacman.setSpriteSheet.calledWith(pacman.direction));
       assert.strictEqual(pacman.pacmanArrow.style.backgroundImage,
-        'url(app/style/graphics/spriteSheets/characters/pacman/arrow_'
+        'url(assets/graphics/spriteSheets/characters/pacman/arrow_'
         + `${pacman.direction}.svg)`);
     });
   });
@@ -114,7 +114,7 @@ describe('pacman', () => {
   });
 
   describe('setSpriteSheet', () => {
-    const baseUrl = 'url(app/style/graphics/spriteSheets/characters/pacman/';
+    const baseUrl = 'url(assets/graphics/spriteSheets/characters/pacman/';
 
     it('sets the correct spritesheet for any given direction', () => {
       pacman.setSpriteSheet('up');
@@ -152,7 +152,7 @@ describe('pacman', () => {
       assert.strictEqual(pacman.animationTarget.style.backgroundSize,
         `${pacman.measurement * pacman.spriteFrames}px`);
       assert.strictEqual(pacman.animationTarget.style.backgroundImage,
-        'url(app/style/graphics/spriteSheets/characters/pacman/'
+        'url(assets/graphics/spriteSheets/characters/pacman/'
         + 'pacman_death.svg)');
       assert.strictEqual(pacman.animationTarget.style.backgroundPosition,
         '0px 0px');
