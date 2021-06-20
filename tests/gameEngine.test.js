@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const GameEngine = require('../src/app/core/gameEngine');
+const GameEngine = require('../src/app/core/game-engine');
 
 let gameEngine;
 const maxFps = 120;

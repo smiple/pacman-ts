@@ -1,4 +1,4 @@
-import GameCoordinator from "./core/gameCoordinator";
+import GameCoordinator from "./core/game-coordinator";
 import {config} from "./config";
 import "../style/main.scss";
 

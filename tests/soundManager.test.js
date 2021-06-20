@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const SoundManager = require('../src/app/utilities/soundManager');
+const SoundManager = require('../src/app/utilities/sound-manager');
 
 let comp;
 

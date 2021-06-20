@@ -1,7 +1,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Pacman = require('../src/app/characters/pacman');
-const CharacterUtil = require('../src/app/utilities/characterUtil');
+const CharacterUtil = require('../src/app/utilities/character-util');
 
 const scaledTileSize = 8;
 

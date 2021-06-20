@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const GameCoordinator = require('../src/app/core/gameCoordinator');
+const GameCoordinator = require('../src/app/core/game-coordinator');
 
 let comp;
 const mazeArray = [

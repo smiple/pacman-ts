@@ -1,9 +1,9 @@
 import Ghost from '../characters/ghost';
 import Pacman from '../characters/pacman';
-import GameEngine from './gameEngine';
+import GameEngine from './game-engine';
 import Pickup from "../pickups/pickup";
-import CharacterUtil from '../utilities/characterUtil';
-import SoundManager from "../utilities/soundManager";
+import CharacterUtil from '../utilities/character-util';
+import SoundManager from "../utilities/sound-manager";
 import Timer from "../utilities/timer";
 import {config} from "../config";
 

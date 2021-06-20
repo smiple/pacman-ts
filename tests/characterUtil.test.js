@@ -1,5 +1,5 @@
 const assert = require('assert');
-const CharacterUtil = require('../src/app/utilities/characterUtil');
+const CharacterUtil = require('../src/app/utilities/character-util');
 
 let characterUtil;
 const oldPosition = { top: 0, left: 0 };

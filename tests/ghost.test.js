@@ -1,7 +1,7 @@
 const assert = require('assert');
 const sinon = require('sinon');
 const Ghost = require('../src/app/characters/ghost');
-const CharacterUtil = require('../src/app/utilities/characterUtil');
+const CharacterUtil = require('../src/app/utilities/character-util');
 
 const scaledTileSize = 8;
 const mazeArray = [
