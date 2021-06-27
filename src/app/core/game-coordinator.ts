@@ -6,26 +6,10 @@ import CharacterUtil from '../utilities/character-util';
 import SoundManager from "../utilities/sound-manager";
 import Timer from "../utilities/timer";
 import {config} from "../config";
+import {GameUIManager} from "./game-ui-manager";
 
 export default class GameCoordinator {
-  gameUi;
-  rowTop;
-  mazeDiv;
-  mazeImg;
-  mazeCover;
-  pointsDisplay;
-  highScoreDisplay;
-  extraLivesDisplay;
-  fruitDisplay;
-  mainMenu;
-  gameStartButton;
-  pauseButton;
-  soundButton;
-  leftCover;
-  rightCover;
-  pausedText;
-  bottomRow;
-  movementButtons;
+
   mazeArray;
   maxFps;
   tileSize;
@@ -59,7 +43,6 @@ export default class GameCoordinator {
   ghosts;
   pickups;
   gameEngine;
-  dotContainer;
   ghostCycleTimer;
   idleGhosts;
   endIdleTimer;
@@ -67,26 +50,9 @@ export default class GameCoordinator {
   fruitTimer;
   ghostCombo;
 
-  constructor() {
-    this.gameUi = document.getElementById('game-ui');
-    this.rowTop = document.getElementById('row-top');
-    this.mazeDiv = document.getElementById('maze');
-    this.mazeImg = document.getElementById('maze-img');
-    this.mazeCover = document.getElementById('maze-cover');
-    this.pointsDisplay = document.getElementById('points-display');
-    this.highScoreDisplay = document.getElementById('high-score-display');
-    this.extraLivesDisplay = document.getElementById('extra-lives');
-    this.fruitDisplay = document.getElementById('fruit-display');
-    this.mainMenu = document.getElementById('main-menu-container');
-    this.gameStartButton = document.getElementById('game-start');
-    this.pauseButton = document.getElementById('pause-button');
-    this.soundButton = document.getElementById('sound-button');
-    this.leftCover = document.getElementById('left-cover');
-    this.rightCover = document.getElementById('right-cover');
-    this.pausedText = document.getElementById('paused-text');
-    this.bottomRow = document.getElementById('bottom-row');
-    this.movementButtons = document.getElementById('movement-buttons');
+  gameUIManager:GameUIManager;
 
+  constructor() {
     this.mazeArray = [
       ['XXXXXXXXXXXXXXXXXXXXXXXXXXXX'],
       ['XooooooooooooXXooooooooooooX'],
@@ -120,6 +86,8 @@ export default class GameCoordinator {
       ['XooooooooooooooooooooooooooX'],
       ['XXXXXXXXXXXXXXXXXXXXXXXXXXXX'],
     ];
+
+    this.gameUIManager = new GameUIManager();
 
     this.maxFps = 120;
     this.tileSize = 8;
@@ -156,18 +124,12 @@ export default class GameCoordinator {
       this.mazeArray[rowIndex] = row[0].split('');
     });
 
-    this.gameStartButton.addEventListener(
-      'click',
-      this.startButtonClick.bind(this),
-    );
-    this.pauseButton.addEventListener('click', this.handlePauseKey.bind(this));
-    this.soundButton.addEventListener(
-      'click',
-      this.soundButtonClick.bind(this),
-    );
+    this.gameUIManager.gameUIEvents.listen("gameStart",this.startButtonClick.bind(this) );
+    this.gameUIManager.gameUIEvents.listen("pauseToggle",this.handlePauseKey.bind(this) );
+    this.gameUIManager.gameUIEvents.listen("soundToggle",this.soundButtonClick.bind(this) );
 
 
-    this.preloadAssets();
+    this.gameUIManager.preloadAssets();
 
     // head.appendChild(link);
   }
@@ -203,18 +165,24 @@ export default class GameCoordinator {
     return scale - 1;
   }
 
+
+  /**
+   * Toggles the master volume for the soundManager, and saves the preference to storage
+   */
+  soundButtonClick() {
+    const newVolume:any = this.soundManager.masterVolume === 1 ? 0 : 1;
+    this.soundManager.setMasterVolume(newVolume);
+    localStorage.setItem('volumePreference', newVolume);
+    this.gameUIManager.setSoundButtonIcon(newVolume);
+  }
+
+
+
   /**
    * Reveals the game underneath the loading covers and starts gameplay
    */
   startButtonClick() {
-    this.leftCover.style.left = '-50%';
-    this.rightCover.style.right = '-50%';
-    this.mainMenu.style.opacity = 0;
-    this.gameStartButton.disabled = true;
-
-    setTimeout(() => {
-      this.mainMenu.style.visibility = 'hidden';
-    }, 1000);
+    this.gameUIManager.startButtonClick();
 
     this.reset();
     if (this.firstGame) {
@@ -224,234 +192,7 @@ export default class GameCoordinator {
     this.startGameplay(true);
   }
 
-  /**
-   * Toggles the master volume for the soundManager, and saves the preference to storage
-   */
-  soundButtonClick() {
-    const newVolume:any = this.soundManager.masterVolume === 1 ? 0 : 1;
-    this.soundManager.setMasterVolume(newVolume);
-    localStorage.setItem('volumePreference', newVolume);
-    this.setSoundButtonIcon(newVolume);
-  }
 
-  /**
-   * Sets the icon for the sound button
-   */
-  setSoundButtonIcon(newVolume) {
-    this.soundButton.innerHTML = newVolume === 0 ? 'volume_off' : 'volume_up';
-  }
-
-  /**
-   * Displays an error message in the event assets are unable to download
-   */
-  displayErrorMessage() {
-    const loadingContainer:any = document.getElementById('loading-container');
-    const errorMessage:any = document.getElementById('error-message');
-    loadingContainer.style.opacity = 0;
-    setTimeout(() => {
-      loadingContainer.remove();
-      errorMessage.style.opacity = 1;
-      errorMessage.style.visibility = 'visible';
-    }, 1500);
-  }
-
-  /**
-   * Load all assets into a hidden Div to pre-load them into memory.
-   * There is probably a better way to read all of these file names.
-   */
-  preloadAssets() {
-    return new Promise((resolve) => {
-      const loadingContainer:any = document.getElementById('loading-container');
-      const loadingPacman:any = document.getElementById('loading-pacman');
-      const loadingDotMask:any = document.getElementById('loading-dot-mask');
-
-      const imgBase = config.imgBase;
-      const imgSources = [
-        // Pacman
-        `${imgBase}characters/pacman/arrow_down.svg`,
-        `${imgBase}characters/pacman/arrow_left.svg`,
-        `${imgBase}characters/pacman/arrow_right.svg`,
-        `${imgBase}characters/pacman/arrow_up.svg`,
-        `${imgBase}characters/pacman/pacman_death.svg`,
-        `${imgBase}characters/pacman/pacman_error.svg`,
-        `${imgBase}characters/pacman/pacman_down.svg`,
-        `${imgBase}characters/pacman/pacman_left.svg`,
-        `${imgBase}characters/pacman/pacman_right.svg`,
-        `${imgBase}characters/pacman/pacman_up.svg`,
-
-        // Blinky
-        `${imgBase}characters/ghosts/blinky/blinky_down_angry.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_down_annoyed.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_down.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_left_angry.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_left_annoyed.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_left.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_right_angry.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_right_annoyed.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_right.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_up_angry.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_up_annoyed.svg`,
-        `${imgBase}characters/ghosts/blinky/blinky_up.svg`,
-
-        // Clyde
-        `${imgBase}characters/ghosts/clyde/clyde_down.svg`,
-        `${imgBase}characters/ghosts/clyde/clyde_left.svg`,
-        `${imgBase}characters/ghosts/clyde/clyde_right.svg`,
-        `${imgBase}characters/ghosts/clyde/clyde_up.svg`,
-
-        // Inky
-        `${imgBase}characters/ghosts/inky/inky_down.svg`,
-        `${imgBase}characters/ghosts/inky/inky_left.svg`,
-        `${imgBase}characters/ghosts/inky/inky_right.svg`,
-        `${imgBase}characters/ghosts/inky/inky_up.svg`,
-
-        // Pinky
-        `${imgBase}characters/ghosts/pinky/pinky_down.svg`,
-        `${imgBase}characters/ghosts/pinky/pinky_left.svg`,
-        `${imgBase}characters/ghosts/pinky/pinky_right.svg`,
-        `${imgBase}characters/ghosts/pinky/pinky_up.svg`,
-
-        // Ghosts Common
-        `${imgBase}characters/ghosts/eyes_down.svg`,
-        `${imgBase}characters/ghosts/eyes_left.svg`,
-        `${imgBase}characters/ghosts/eyes_right.svg`,
-        `${imgBase}characters/ghosts/eyes_up.svg`,
-        `${imgBase}characters/ghosts/scared_blue.svg`,
-        `${imgBase}characters/ghosts/scared_white.svg`,
-
-        // Dots
-        `${imgBase}pickups/pacdot.svg`,
-        `${imgBase}pickups/powerPellet.svg`,
-
-        // Fruit
-        `${imgBase}pickups/apple.svg`,
-        `${imgBase}pickups/bell.svg`,
-        `${imgBase}pickups/cherry.svg`,
-        `${imgBase}pickups/galaxian.svg`,
-        `${imgBase}pickups/key.svg`,
-        `${imgBase}pickups/melon.svg`,
-        `${imgBase}pickups/orange.svg`,
-        `${imgBase}pickups/strawberry.svg`,
-
-        // Text
-        `${imgBase}text/ready.svg`,
-
-        // Points
-        `${imgBase}text/100.svg`,
-        `${imgBase}text/200.svg`,
-        `${imgBase}text/300.svg`,
-        `${imgBase}text/400.svg`,
-        `${imgBase}text/500.svg`,
-        `${imgBase}text/700.svg`,
-        `${imgBase}text/800.svg`,
-        `${imgBase}text/1000.svg`,
-        `${imgBase}text/1600.svg`,
-        `${imgBase}text/2000.svg`,
-        `${imgBase}text/3000.svg`,
-        `${imgBase}text/5000.svg`,
-
-        // Maze
-        `${imgBase}maze/maze_blue.svg`,
-
-        // Misc
-        'assets/graphics/extra_life.png',
-      ];
-
-      const audioBase = 'assets/audio/';
-      const audioSources = [
-        `${audioBase}game_start.mp3`,
-        `${audioBase}pause.mp3`,
-        `${audioBase}pause_beat.mp3`,
-        `${audioBase}siren_1.mp3`,
-        `${audioBase}siren_2.mp3`,
-        `${audioBase}siren_3.mp3`,
-        `${audioBase}power_up.mp3`,
-        `${audioBase}extra_life.mp3`,
-        `${audioBase}eyes.mp3`,
-        `${audioBase}eat_ghost.mp3`,
-        `${audioBase}death.mp3`,
-        `${audioBase}fruit.mp3`,
-        `${audioBase}dot_1.mp3`,
-        `${audioBase}dot_2.mp3`,
-      ];
-
-      const totalSources = imgSources.length + audioSources.length;
-      this.remainingSources = totalSources;
-
-      loadingPacman.style.left = '0';
-      loadingDotMask.style.width = '0';
-
-      Promise.all([
-        this.createElements(imgSources, 'img', totalSources, this),
-        this.createElements(audioSources, 'audio', totalSources, this),
-      ])
-        .then(() => {
-          loadingContainer.style.opacity = 0;
-          resolve(null);
-
-          setTimeout(() => {
-            loadingContainer.remove();
-            this.mainMenu.style.opacity = 1;
-            this.mainMenu.style.visibility = 'visible';
-          }, 1500);
-        })
-        .catch(this.displayErrorMessage);
-    });
-  }
-
-  /**
-   * Iterates through a list of sources and updates the loading bar as the assets load in
-   * @param {String[]} sources
-   * @param {('img'|'audio')} type
-   * @param {Number} totalSources
-   * @param {Object} gameCoord
-   * @returns {Promise}
-   */
-  createElements(sources, type, totalSources, gameCoord) {
-    const loadingContainer = document.getElementById('loading-container');
-    const preloadDiv = document.getElementById('preload-div');
-    const loadingPacman = document.getElementById('loading-pacman');
-    const containerWidth = loadingContainer.scrollWidth
-      - loadingPacman.scrollWidth;
-    const loadingDotMask = document.getElementById('loading-dot-mask');
-
-    const gameCoordRef = gameCoord;
-
-    return new Promise((resolve, reject) => {
-      let loadedSources = 0;
-
-      sources.forEach((source) => {
-        const element:any = type === 'img' ? new Image() : new Audio();
-        preloadDiv.appendChild(element);
-
-        const elementReady = () => {
-          gameCoordRef.remainingSources -= 1;
-          loadedSources += 1;
-          const percent = 1 - gameCoordRef.remainingSources / totalSources;
-          loadingPacman.style.left = `${percent * containerWidth}px`;
-          loadingDotMask.style.width = loadingPacman.style.left;
-
-          if (loadedSources === sources.length) {
-            resolve(null);
-          }
-        };
-
-        if (type === 'img') {
-          element.onload = elementReady;
-          element.onerror = reject;
-        } else {
-          element.addEventListener('canplaythrough', elementReady);
-          element.onerror = reject;
-        }
-
-        element.src = source;
-
-        if (type === 'audio') {
-          element.load();
-        }
-      });
-    });
-  }
 
   /**
    * Resets gameCoordinator values to their default states
@@ -518,7 +259,7 @@ export default class GameCoordinator {
         13.5,
         17,
         this.pacman,
-        this.mazeDiv,
+        this.gameUIManager.mazeDiv,
         100,
       );
     }
@@ -555,15 +296,17 @@ export default class GameCoordinator {
       });
     }
 
-    this.pointsDisplay.innerHTML = '00';
-    this.highScoreDisplay.innerHTML = this.highScore || '00';
-    this.clearDisplay(this.fruitDisplay);
+    this.gameUIManager.setPointDisplay('00');
+    this.gameUIManager.setHighScoreDisaply(this.highScore || '00');
+    // TODO Update This in future
+    this.clearDisplay(this.gameUIManager.fruitDisplay);
 
     const volumePreference = parseInt(
       localStorage.getItem('volumePreference') || '1',
       10,
     );
-    this.setSoundButtonIcon(volumePreference);
+
+    this.gameUIManager.setSoundButtonIcon(volumePreference);
     this.soundManager.setMasterVolume(volumePreference);
   }
 
@@ -585,11 +328,7 @@ export default class GameCoordinator {
   drawMaze(mazeArray, entityList) {
     this.pickups = [this.fruit];
 
-    this.mazeDiv.style.height = `${this.scaledTileSize * 31}px`;
-    this.mazeDiv.style.width = `${this.scaledTileSize * 28}px`;
-    this.gameUi.style.width = `${this.scaledTileSize * 28}px`;
-    this.bottomRow.style.minHeight = `${this.scaledTileSize * 2}px`;
-    this.dotContainer = document.getElementById('dot-container');
+    this.gameUIManager.drawMaze(this.scaledTileSize);
 
     mazeArray.forEach((row, rowIndex) => {
       row.forEach((block, columnIndex) => {
@@ -602,7 +341,7 @@ export default class GameCoordinator {
             columnIndex,
             rowIndex,
             this.pacman,
-            this.dotContainer,
+            this.gameUIManager.dotContainer,
             points,
           );
 
@@ -615,8 +354,7 @@ export default class GameCoordinator {
   }
 
   setUiDimensions() {
-    this.gameUi.style.fontSize = `${this.scaledTileSize}px`;
-    this.rowTop.style.marginBottom = `${this.scaledTileSize}px`;
+    this.gameUIManager.setUiDimensions(this.scaledTileSize);
   }
 
   /**
@@ -697,13 +435,13 @@ export default class GameCoordinator {
    * Displays extra life images equal to the number of remaining lives
    */
   updateExtraLivesDisplay() {
-    this.clearDisplay(this.extraLivesDisplay);
+    this.clearDisplay(this.gameUIManager.extraLivesDisplay);
 
     for (let i = 0; i < this.lives; i += 1) {
       const extraLifePic = document.createElement('img');
       extraLifePic.setAttribute('src', 'assets/graphics/extra_life.svg');
       extraLifePic.style.height = `${this.scaledTileSize * 2}px`;
-      this.extraLivesDisplay.appendChild(extraLifePic);
+      this.gameUIManager.extraLivesDisplay.appendChild(extraLifePic);
     }
   }
 
@@ -717,14 +455,14 @@ export default class GameCoordinator {
       rawImageSource.indexOf(')'),
     );
 
-    if (this.fruitDisplay.children.length === 7) {
-      this.fruitDisplay.removeChild(this.fruitDisplay.firstChild);
+    if (this.gameUIManager.fruitDisplay.children.length === 7) {
+      this.gameUIManager.fruitDisplay.removeChild(this.gameUIManager.fruitDisplay.firstChild);
     }
 
     const fruitPic = document.createElement('img');
     fruitPic.setAttribute('src', parsedSource);
     fruitPic.style.height = `${this.scaledTileSize * 2}px`;
-    this.fruitDisplay.appendChild(fruitPic);
+    this.gameUIManager.fruitDisplay.appendChild(fruitPic);
   }
 
   /**
@@ -828,20 +566,20 @@ export default class GameCoordinator {
 
       if (this.gameEngine.started) {
         this.soundManager.resumeAmbience();
-        this.gameUi.style.filter = 'unset';
-        this.movementButtons.style.filter = 'unset';
-        this.pausedText.style.visibility = 'hidden';
-        this.pauseButton.innerHTML = 'pause';
+        this.gameUIManager.gameUi.style.filter = 'unset';
+        this.gameUIManager.movementButtons.style.filter = 'unset';
+        this.gameUIManager.pausedText.style.visibility = 'hidden';
+        this.gameUIManager.pauseButton.innerHTML = 'pause';
         this.activeTimers.forEach((timer) => {
           timer.resume();
         });
       } else {
         this.soundManager.stopAmbience();
         this.soundManager.setAmbience('pause_beat', true);
-        this.gameUi.style.filter = 'blur(5px)';
-        this.movementButtons.style.filter = 'blur(5px)';
-        this.pausedText.style.visibility = 'visible';
-        this.pauseButton.innerHTML = 'play_arrow';
+        this.gameUIManager.gameUi.style.filter = 'blur(5px)';
+        this.gameUIManager.movementButtons.style.filter = 'blur(5px)';
+        this.gameUIManager.pausedText.style.visibility = 'visible';
+        this.gameUIManager.pauseButton.innerHTML = 'play_arrow';
         this.activeTimers.forEach((timer) => {
           timer.pause();
         });
@@ -855,10 +593,10 @@ export default class GameCoordinator {
    */
   awardPoints(e) {
     this.points += e.detail.points;
-    this.pointsDisplay.innerText = this.points;
+    this.gameUIManager.pointsDisplay.innerText = this.points;
     if (this.points > (this.highScore || 0)) {
       this.highScore = this.points;
-      this.highScoreDisplay.innerText = this.points;
+      this.gameUIManager.highScoreDisplay.innerText = this.points;
       localStorage.setItem('highScore', this.highScore);
     }
 
@@ -920,10 +658,10 @@ export default class GameCoordinator {
         this.lives -= 1;
 
         new Timer(() => {
-          this.mazeCover.style.visibility = 'visible';
+          this.gameUIManager.mazeCover.style.visibility = 'visible';
           new Timer(() => {
             this.allowKeyPresses = true;
-            this.mazeCover.style.visibility = 'hidden';
+            this.gameUIManager.mazeCover.style.visibility = 'hidden';
             this.pacman.reset();
             this.ghosts.forEach((ghost) => {
               ghost.reset();
@@ -959,13 +697,13 @@ export default class GameCoordinator {
       this.fruit.hideFruit();
 
       new Timer(() => {
-        this.leftCover.style.left = '0';
-        this.rightCover.style.right = '0';
+        this.gameUIManager.leftCover.style.left = '0';
+        this.gameUIManager.rightCover.style.right = '0';
 
         setTimeout(() => {
-          this.mainMenu.style.opacity = 1;
-          this.gameStartButton.disabled = false;
-          this.mainMenu.style.visibility = 'visible';
+          this.gameUIManager.mainMenu.style.opacity = 1;
+          this.gameUIManager.gameStartButton.disabled = false;
+          this.gameUIManager.mainMenu.style.visibility = 'visible';
         }, 1000);
       }, 2500);
     }, 2250);
@@ -1060,22 +798,22 @@ export default class GameCoordinator {
         const ghostRef = ghost;
         ghostRef.display = false;
       });
-
-      this.mazeImg.src = `${imgBase}maze_white.svg`;
+      // TODO Refector This Callback hell
+      this.gameUIManager.mazeImg.src = `${imgBase}maze_white.svg`;
       new Timer(() => {
-        this.mazeImg.src = `${imgBase}maze_blue.svg`;
+        this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.svg`;
         new Timer(() => {
-          this.mazeImg.src = `${imgBase}maze_white.svg`;
+          this.gameUIManager.mazeImg.src = `${imgBase}maze_white.svg`;
           new Timer(() => {
-            this.mazeImg.src = `${imgBase}maze_blue.svg`;
+            this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.svg`;
             new Timer(() => {
-              this.mazeImg.src = `${imgBase}maze_white.svg`;
+              this.gameUIManager.mazeImg.src = `${imgBase}maze_white.svg`;
               new Timer(() => {
-                this.mazeImg.src = `${imgBase}maze_blue.svg`;
+                this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.svg`;
                 new Timer(() => {
-                  this.mazeCover.style.visibility = 'visible';
+                  this.gameUIManager.mazeCover.style.visibility = 'visible';
                   new Timer(() => {
-                    this.mazeCover.style.visibility = 'hidden';
+                    this.gameUIManager.mazeCover.style.visibility = 'hidden';
                     this.level += 1;
                     this.allowKeyPresses = true;
                     this.entityList.forEach((entity) => {
@@ -1263,10 +1001,10 @@ export default class GameCoordinator {
     pointsDiv.style.left = `${position.left}px`;
     pointsDiv.style.zIndex = 2;
 
-    this.mazeDiv.appendChild(pointsDiv);
+    this.gameUIManager.mazeDiv.appendChild(pointsDiv);
 
     new Timer(() => {
-      this.mazeDiv.removeChild(pointsDiv);
+      this.gameUIManager.mazeDiv.removeChild(pointsDiv);
     }, duration);
   }
 

@@ -20,13 +20,13 @@ This project makes use of *__[NodeJS](https://nodejs.org/en/)__*. Download it, t
 - [X] move style processing to webpack
 - [X] Refactor TS File Names
 - [ ] Setup CI/CD Pipelines 
-- [ ] Update UnitTests
 - [ ] Host Version Online and add link
 - [ ] Abstract out some game logic from gameCoordinator and add other class that help manage logic (like AssetLoader,GamePoints etc...)
 - [ ] Clean up document Element References
 - [ ] Create player control mechanism abstracted so that we can use change it in the future (like for AI version or Multiplayer version)
 - [ ] Abstract Ghost class and sub class for each type of ghost
 - [ ] Abstract out the ghost behavior and path find logic 
+- [ ] Update UnitTests
 - [ ] More coming ...
 
 
