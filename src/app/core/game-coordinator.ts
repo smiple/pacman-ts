@@ -439,7 +439,7 @@ export default class GameCoordinator {
 
     for (let i = 0; i < this.lives; i += 1) {
       const extraLifePic = document.createElement('img');
-      extraLifePic.setAttribute('src', 'assets/graphics/extra_life.svg');
+      extraLifePic.setAttribute('src', 'assets/graphics/extra_life.png');
       extraLifePic.style.height = `${this.scaledTileSize * 2}px`;
       this.gameUIManager.extraLivesDisplay.appendChild(extraLifePic);
     }
@@ -799,17 +799,17 @@ export default class GameCoordinator {
         ghostRef.display = false;
       });
       // TODO Refector This Callback hell
-      this.gameUIManager.mazeImg.src = `${imgBase}maze_white.svg`;
+      this.gameUIManager.mazeImg.src = `${imgBase}maze_white.png`;
       new Timer(() => {
-        this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.svg`;
+        this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.png`;
         new Timer(() => {
-          this.gameUIManager.mazeImg.src = `${imgBase}maze_white.svg`;
+          this.gameUIManager.mazeImg.src = `${imgBase}maze_white.png`;
           new Timer(() => {
-            this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.svg`;
+            this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.png`;
             new Timer(() => {
-              this.gameUIManager.mazeImg.src = `${imgBase}maze_white.svg`;
+              this.gameUIManager.mazeImg.src = `${imgBase}maze_white.png`;
               new Timer(() => {
-                this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.svg`;
+                this.gameUIManager.mazeImg.src = `${imgBase}maze_blue.png`;
                 new Timer(() => {
                   this.gameUIManager.mazeCover.style.visibility = 'visible';
                   new Timer(() => {
@@ -994,7 +994,7 @@ export default class GameCoordinator {
     pointsDiv.style.position = 'absolute';
     pointsDiv.style.backgroundSize = `${width}px`;
     pointsDiv.style.backgroundImage = 'url(assets/graphics/'
-        + `spriteSheets/text/${amount}.svg`;
+        + `spriteSheets/text/${amount}.png`;
     pointsDiv.style.width = `${width}px`;
     pointsDiv.style.height = `${height || width}px`;
     pointsDiv.style.top = `${position.top}px`;

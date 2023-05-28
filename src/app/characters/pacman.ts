@@ -43,7 +43,7 @@ export default class Pacman {
     this.setDefaultPosition(this.scaledTileSize);
     this.setSpriteSheet(this.direction);
     this.pacmanArrow.style.backgroundImage = 'url(assets/graphics/'
-      + `spriteSheets/characters/pacman/arrow_${this.direction}.svg)`;
+      + `spriteSheets/characters/pacman/arrow_${this.direction}.png)`;
   }
 
   /**
@@ -122,7 +122,7 @@ export default class Pacman {
    */
   setSpriteSheet(direction) {
     this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
-      + `spriteSheets/characters/pacman/pacman_${direction}.svg)`;
+      + `spriteSheets/characters/pacman/pacman_${direction}.png)`;
   }
 
   prepDeathAnimation() {
@@ -134,7 +134,7 @@ export default class Pacman {
     const bgSize = this.measurement * this.spriteFrames;
     this.animationTarget.style.backgroundSize = `${bgSize}px`;
     this.animationTarget.style.backgroundImage = 'url(app/style/'
-      + 'graphics/spriteSheets/characters/pacman/pacman_death.svg)';
+      + 'graphics/spriteSheets/characters/pacman/pacman_death.png)';
     this.animationTarget.style.backgroundPosition = '0px 0px';
     this.pacmanArrow.style.backgroundImage = '';
   }
@@ -147,7 +147,7 @@ export default class Pacman {
   changeDirection(newDirection, startMoving) {
     this.desiredDirection = newDirection;
     this.pacmanArrow.style.backgroundImage = 'url(assets/graphics/'
-      + `spriteSheets/characters/pacman/arrow_${this.desiredDirection}.svg)`;
+      + `spriteSheets/characters/pacman/arrow_${this.desiredDirection}.png)`;
 
     if (startMoving) {
       this.moving = true;

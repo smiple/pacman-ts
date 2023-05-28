@@ -103,7 +103,7 @@ export default class Pickup {
       image = type;
     }
 
-    return `url(assets/graphics/spriteSheets/pickups/${image}.svg)`;
+    return `url(assets/graphics/spriteSheets/pickups/${image}.png)`;
   }
 
   /**

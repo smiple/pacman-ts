@@ -215,14 +215,14 @@ export default class Ghost {
 
     if (mode === 'scared') {
       this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
-        + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.svg)`;
+        + `spriteSheets/characters/ghosts/scared_${this.scaredColor}.png)`;
     } else if (mode === 'eyes') {
       this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
-        + `spriteSheets/characters/ghosts/eyes_${direction}.svg)`;
+        + `spriteSheets/characters/ghosts/eyes_${direction}.png)`;
     } else {
       this.animationTarget.style.backgroundImage = 'url(assets/graphics/'
         + `spriteSheets/characters/ghosts/${name}/${name}_${direction}`
-        + `${emotion}.svg)`;
+        + `${emotion}.png)`;
     }
   }
 

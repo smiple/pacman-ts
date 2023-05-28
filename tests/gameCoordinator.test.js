@@ -384,7 +384,7 @@ describe('gameCoordinator', () => {
       comp.lives = 3;
 
       comp.updateExtraLivesDisplay();
-      assert(spy.calledWith('src', 'assets/graphics/extra_life.svg'));
+      assert(spy.calledWith('src', 'assets/graphics/extra_lifed.png'));
       assert(spy.calledThrice);
     });
   });
@@ -404,13 +404,13 @@ describe('gameCoordinator', () => {
         style: {},
       });
 
-      comp.updateFruitDisplay('url(image.svg)');
+      comp.updateFruitDisplay('url(imaged.png)');
       assert(!removeSpy.called);
-      assert(attributeSpy.calledWith('src', 'image.svg'));
+      assert(attributeSpy.calledWith('src', 'imaged.png'));
       assert(appendSpy.called);
 
       comp.fruitDisplay.children.length = 7;
-      comp.updateFruitDisplay('url(image.svg)');
+      comp.updateFruitDisplay('url(imaged.png)');
       assert(removeSpy.called);
     });
   });
@@ -948,22 +948,22 @@ describe('gameCoordinator', () => {
       ));
 
       clock.tick(2000);
-      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_white.svg`);
+      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_whited.png`);
 
       clock.tick(250);
-      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_blue.svg`);
+      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_blued.png`);
 
       clock.tick(250);
-      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_white.svg`);
+      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_whited.png`);
 
       clock.tick(250);
-      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_blue.svg`);
+      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_blued.png`);
 
       clock.tick(250);
-      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_white.svg`);
+      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_whited.png`);
 
       clock.tick(250);
-      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_blue.svg`);
+      assert.strictEqual(comp.mazeImg.src, `${imgBase}maze_blued.png`);
 
       clock.tick(250);
       assert.strictEqual(comp.mazeCover.style.visibility, 'visible');
