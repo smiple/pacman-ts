@@ -3,9 +3,9 @@
     "test": "nyc --check-coverage --lines 100 --functions 100 --branches 100 mocha tests",
     "coverage": "nyc report --reporter=text-lcov | node ./node_modules/coveralls/bin/coveralls.js",
     "lint": "./node_modules/.bin/eslint .",
-    "serve:dev": "webpack serve --mode development",
-    "build": "webpack --mode production",
-    "build:dev": "webpack --mode development -w"
+    "serve:dev": "NODE_OPTIONS=--openssl-legacy-provider webpack serve --mode development",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
+    "build:dev": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode development -w"
   },
   "engines": {
     "node": ">=12.18.3",

@@ -210,7 +210,7 @@ export class GameUIManager{
                 `${imgBase}maze/maze_blue.svg`,
 
                 // Misc
-                'assets/graphics/extra_life.png',
+                'assets/graphics/extra_life.svg',
             ];
 
             const audioBase = 'assets/audio/';
